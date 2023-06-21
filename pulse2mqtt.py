@@ -14,7 +14,6 @@ import json
 import sys
 
 # read config
-print(sys.argv)
 if len(sys.argv)>1:
     config_path = sys.argv[1]
 else:
