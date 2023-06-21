@@ -90,7 +90,17 @@ def map_values_to_msg( config, values_in ):
         obis = v['obis']
         if obis in config['obis']:
            name = config['obis'][obis]['name']
-           msg[name] = v['value']
+           value = v['value']
+
+           transform_factor = config['obis'][obis].get('factor')
+           if transform_factor:
+                value = value * transform_factor
+
+           transform_round = config['obis'][obis].get('round')
+           if transform_round is not None:
+                value = round(value, transform_round)
+
+           msg[name] = value
 
    msg.update(config['mqtt']['static'])
 
@@ -113,11 +123,11 @@ def run( config, tid_old, session, client ):
     msg['transaction_id'] = tid_new
     msg['Time'] = datetime.datetime.utcnow().isoformat()[:19]
 
-    #print(json.dumps(msg))
-
-    # publish
+    # publish or print
     if client:
         client.publish(config['mqtt']['topic'],json.dumps(msg))
+    else:
+        print(json.dumps(msg))
 
     return tid_new
 

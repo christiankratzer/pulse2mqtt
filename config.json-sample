@@ -21,7 +21,9 @@
   },
   "obis": {
       "0100010800ff": {
-	"name": "OBIS_Total_in"
+	"name": "OBIS_Total_in",
+	"factor": 0.001,
+	"round": 0
       },
       "0100100700ff": {
 	"name": "OBIS_Power_curr"
