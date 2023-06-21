@@ -1,0 +1,30 @@
+{
+  "poll": 10,
+  "pulse": {
+    "url": "http://tibber-bridge/data.json",
+    "node": "1",
+    "user": "admin",
+    "password": "XXXX-XXXX"
+  },
+  "mqtt": {
+    "client": {
+	"client_id": "pulse2mqtt"
+    },
+    "topic": "meter/Zuhause/NNNNNNN/SENSOR",
+    "broker": {
+        "host": "mqtt.host.name",
+        "port": 1883
+     },
+     "static": {
+	"OBIS_Meter_number": "NNNNNNN"
+     }
+  },
+  "obis": {
+      "0100010800ff": {
+	"name": "OBIS_Total_in"
+      },
+      "0100100700ff": {
+	"name": "OBIS_Power_curr"
+      }
+   }
+}
