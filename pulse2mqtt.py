@@ -4,12 +4,17 @@
 
 from smllib import SmlStreamReader
 from smllib.const import OBIS_NAMES, UNITS
+import paho.mqtt.client as mqtt
+import datetime
 import requests
+import copy
+import time
 import math
 import json
 import sys
 
 # read config
+print(sys.argv)
 if len(sys.argv)>1:
     config_path = sys.argv[1]
 else:
@@ -57,10 +62,7 @@ def decode_sml( config, smldata ):
 
     parsed_msgs = sml_frame.parse_frame()
     msg = parsed_msgs[1]
-    response = {
-        'transaction_id': msg.transaction_id,
-        'values': []
-    }
+    values = []
 
     # Shortcut to extract all values without parsing the whole frame
     obis_values = sml_frame.get_obis()
@@ -78,24 +80,56 @@ def decode_sml( config, smldata ):
                 obis['value'] = list_entry.value
             obis['unit'] = UNITS.get( list_entry.unit )
 
-        response['values'].append(obis)
+        values.append(obis)
 
-    return response
+    return msg.transaction_id, values
 
 
+def map_values_to_msg( config, values_in ):
+   msg = {}
+   for v in values_in:
+        obis = v['obis']
+        if obis in config['obis']:
+           name = config['obis'][obis]['name']
+           msg[name] = v['value']
 
+   msg.update(config['mqtt']['static'])
+
+   return msg
+
+
+def run( config, tid_old, session, client ):
+    # poll raw sml data
+    smldata = poll(config, session)
+    if not smldata:
+        return tid_old
+
+    # decode transaction_id and values
+    tid_new, values = decode_sml(config, smldata)
+    if tid_new==tid_old:
+        return tid_old
+
+    # map sml to mqtt msg
+    msg = map_values_to_msg(config, values)
+    msg['transaction_id'] = tid_new
+    msg['Time'] = datetime.datetime.utcnow().isoformat()[:19]
+
+    #print(json.dumps(msg))
+
+    # publish
+    if client:
+        client.publish(config['mqtt']['topic'],json.dumps(msg))
+
+    return tid_new
+
+# main loop
 if client:
     client.loop_start()
 try:
+    tid = None
     while True:
-
-        smldata = poll(config, session)
-        if smldata:
-           r = decode_sml(config, smldata)
-
-           print(json.dumps(r,indent=4))
-
-    time.sleep(5)
+        tid = run( config, tid, session, client )
+        time.sleep( config['poll'] )
 
 finally:
     if client:
