@@ -1,5 +1,7 @@
 {
   "poll": 10,
+  "log": "/var/log/pulse2mqtt/pulse2mqtt.log",
+  "loglevel": "INFO",
   "pulse": {
     "url": "http://tibber-bridge/data.json",
     "node": "1",

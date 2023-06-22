@@ -6,12 +6,15 @@ from smllib import SmlStreamReader
 from smllib.const import OBIS_NAMES, UNITS
 import paho.mqtt.client as mqtt
 import datetime
+import logging
+import traceback
 import requests
 import copy
 import time
 import math
 import json
 import sys
+import os
 
 # read config
 if len(sys.argv)>1:
@@ -22,8 +25,15 @@ else:
 with open(config_path, 'r') as f:
     config = json.loads(f.read())
 
+# setup logging
+logging.basicConfig(
+    filename=config["log"],
+    format='api %(asctime)s %(levelname)s %(message)s',
+    level=getattr(logging, config.get("loglevel","INFO")))
+
 # setup requests session
 session = requests.Session()
+
 
 # setup mqtt client
 if 'mqtt' in sys.argv:
@@ -126,12 +136,17 @@ def run( config, tid_old, session, client ):
     # publish or print
     if client:
         client.publish(config['mqtt']['topic'],json.dumps(msg))
+        logging.debug(json.dumps(msg))
     else:
         print(json.dumps(msg))
 
     return tid_new
 
+
 # main loop
+logging.info('Start')
+t0 = time.time()
+
 if client:
     client.loop_start()
 try:
@@ -140,10 +155,27 @@ try:
         tid = run( config, tid, session, client )
         time.sleep( config['poll'] )
 
+        t1 = time.time()
+        if t1-t0>300:
+            logging.info('Alive')
+            t0=t1
+
+except Exception as e:
+    exc_type, exc_obj, exc_tb = sys.exc_info()
+    ex = {
+        'exception':str(e),
+        'traceback': traceback.format_exc().split('\n'),
+        'file': os.path.split(exc_tb.tb_frame.f_code.co_filename)[1],
+        'line': exc_tb.tb_lineno,
+        }
+    logging.warning(json.dumps(ex))
+
 finally:
     if client:
         client.loop_stop()
         client.disconnect()
+
+    logging.info('Stop')
 
 
 
