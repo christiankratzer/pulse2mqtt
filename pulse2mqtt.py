@@ -156,7 +156,7 @@ try:
         time.sleep( config['poll'] )
 
         t1 = time.time()
-        if t1-t0>300:
+        if t1-t0>config.get('alive',300):
             logging.info('Alive')
             t0=t1
 

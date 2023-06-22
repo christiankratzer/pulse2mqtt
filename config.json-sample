@@ -1,5 +1,6 @@
 {
   "poll": 10,
+  "alive": 900,
   "log": "/var/log/pulse2mqtt/pulse2mqtt.log",
   "loglevel": "INFO",
   "pulse": {
