@@ -28,7 +28,7 @@ with open(config_path, 'r') as f:
 # setup logging
 logging.basicConfig(
     filename=config["log"],
-    format='api %(asctime)s %(levelname)s %(message)s',
+    format='pulse2mqtt %(asctime)s %(levelname)s %(message)s',
     level=getattr(logging, config.get("loglevel","INFO")))
 
 # setup requests session
@@ -69,6 +69,12 @@ def decode_sml( config, smldata ):
     stream = SmlStreamReader()
     stream.add(smldata)
     sml_frame = stream.get_frame()
+    if sml_frame is None:
+        logging.warning(json.dumps({
+            'msg': 'Cannot decode SML data',
+            'sml': smldata.hex(),
+            }))
+        return None, []
 
     parsed_msgs = sml_frame.parse_frame()
     msg = parsed_msgs[1]
@@ -127,21 +133,8 @@ def run( config, tid_old, session, client ):
         return tid_old
 
     # decode transaction_id and values
-    try:
-        tid_new, values = decode_sml(config, smldata)
-        if tid_new==tid_old:
-            return tid_old
-    except Exception as e:
-        exc_type, exc_obj, exc_tb = sys.exc_info()
-        ex = {
-            'msg': 'Exception decoding sml data',
-            'sml': smldata.hex(),
-            'exception':str(e),
-            'traceback': traceback.format_exc().split('\n'),
-            'file': os.path.split(exc_tb.tb_frame.f_code.co_filename)[1],
-            'line': exc_tb.tb_lineno,
-            }
-        logging.warning(ex)
+    tid_new, values = decode_sml(config, smldata)
+    if tid_new is None or tid_new==tid_old:
         return tid_old
 
     # map sml to mqtt msg
