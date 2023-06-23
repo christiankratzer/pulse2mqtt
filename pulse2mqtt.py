@@ -92,6 +92,8 @@ def decode_sml( config, smldata ):
 
         values.append(obis)
 
+    logging.debug(json.dumps({'transaction_id': msg.transaction_id, 'values': values}))
+
     return msg.transaction_id, values
 
 
