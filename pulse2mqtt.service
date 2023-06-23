@@ -1,0 +1,15 @@
+[Unit]
+Description=pulse2mqtt
+Documentation=https://gitlab.cksoft.de/iot/pulse2mqtt
+After=network-online.target
+
+[Service]
+Type=simple
+User=ck
+Group=ck
+Restart=on-failure
+RestartSec=2min
+ExecStart=/opt/pulse2mqtt/venv/bin/python /opt/pulse2mqtt/pulse2mqtt.py /opt/pulse2mqtt/config.json
+
+[Install]
+WantedBy=multi-user.target
