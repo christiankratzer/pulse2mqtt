@@ -36,7 +36,9 @@ session = requests.Session()
 
 
 # setup mqtt client
-if 'mqtt' in sys.argv:
+if 'nomqtt' in sys.argv:
+    client = None
+else:
     client = mqtt.Client( **config["mqtt"]["client"] )
 
     if 'tls' in config["mqtt"]:
@@ -46,8 +48,6 @@ if 'mqtt' in sys.argv:
         client.username_pw_set( **config["mqtt"]["credentials"] )
 
     client.connect( **config["mqtt"]["broker"] )
-else:
-    client = None
 
 
 def poll( config, session ):
@@ -59,6 +59,7 @@ def poll( config, session ):
     if r.status_code==200:
         smldata = r.content
         if len(smldata)>0:
+           logging.debug(json.dumps({'sml':smldata.hex()}))
            return smldata
 
     return None
@@ -124,8 +125,20 @@ def run( config, tid_old, session, client ):
         return tid_old
 
     # decode transaction_id and values
-    tid_new, values = decode_sml(config, smldata)
-    if tid_new==tid_old:
+    try:
+        tid_new, values = decode_sml(config, smldata)
+        if tid_new==tid_old:
+            return tid_old
+    except Exception as e:
+        ex = {
+            'msg': 'Exception decoding sml data',
+            'sml': smldata.hex(),
+            'exception':str(e),
+            'traceback': traceback.format_exc().split('\n'),
+            'file': os.path.split(exc_tb.tb_frame.f_code.co_filename)[1],
+            'line': exc_tb.tb_lineno,
+            }
+        logging.warning(ex)
         return tid_old
 
     # map sml to mqtt msg
