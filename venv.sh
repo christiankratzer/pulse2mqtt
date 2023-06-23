@@ -4,3 +4,4 @@ venv/bin/pip install wheel
 venv/bin/pip install paho-mqtt
 venv/bin/pip install smllib
 venv/bin/pip install requests
+venv/bin/pip install python-json-logger
