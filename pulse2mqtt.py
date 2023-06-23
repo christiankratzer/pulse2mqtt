@@ -132,6 +132,7 @@ def run( config, tid_old, session, client ):
         if tid_new==tid_old:
             return tid_old
     except Exception as e:
+        exc_type, exc_obj, exc_tb = sys.exc_info()
         ex = {
             'msg': 'Exception decoding sml data',
             'sml': smldata.hex(),
