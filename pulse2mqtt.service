@@ -7,8 +7,8 @@ After=network-online.target
 Type=simple
 User=ck
 Group=ck
-Restart=on-failure
-RestartSec=2min
+Restart=always
+RestartSec=5s
 ExecStart=/opt/pulse2mqtt/venv/bin/python /opt/pulse2mqtt/pulse2mqtt.py /opt/pulse2mqtt/config.json
 
 [Install]
