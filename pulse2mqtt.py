@@ -68,7 +68,16 @@ def poll( config, session ):
 def decode_sml( config, smldata ):
     stream = SmlStreamReader()
     stream.add(smldata)
-    sml_frame = stream.get_frame()
+
+    try:
+        sml_frame = stream.get_frame()
+    except Exception as e:
+        logging.warning(json.dumps({
+            'msg': 'Exception decoding SML data',
+            'sml': smldata.hex(),
+            }))
+        return None, []
+
     if sml_frame is None:
         logging.warning(json.dumps({
             'msg': 'Cannot decode SML data',
