@@ -177,15 +177,17 @@ try:
             exception_count = 0
 
         except Exception as e:
+            exception_count = exception_count + 1
+
             exc_type, exc_obj, exc_tb = sys.exc_info()
             ex = {
                 'exception':str(e),
+                'count': exception_count,
                 'traceback': traceback.format_exc().split('\n'),
                 'file': os.path.split(exc_tb.tb_frame.f_code.co_filename)[1],
                 'line': exc_tb.tb_lineno,
                 }
 
-            exception_count = exeption_count + 1
             if exception_count>=3:
                 ex['msg']='Aborting'
                 logging.warning(json.dumps(ex))
