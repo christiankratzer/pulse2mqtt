@@ -12,7 +12,8 @@ For a an analysis of the tibber pulse and bridge please look here
 
 ## Setup
 
-- Create a working directory in `/opt/pulse2mqtt` or similar.
+- Create working and log directories in `/opt/pulse2mqtt` and `/var/log/pulse2mqtt` uor similar.
+- Clone repo to `/opt/pulse2mqtt`;
 - Create a python3 virtual environment using the `venv.sh` script or the provided `requirements.txt`.
 - Copy the sample configuration file and edit to your needs.
 - Start in debug mode.
