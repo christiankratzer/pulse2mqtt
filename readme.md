@@ -22,7 +22,7 @@ For a an analysis of the tibber pulse and bridge please look here
 
 The `config.json` provides following settings
 
-```json
+```jsonc
 {
   "poll": 10,   # frequence to poll the bridge
   "alive": 900, # emit an alive message to the log every alive seconds
