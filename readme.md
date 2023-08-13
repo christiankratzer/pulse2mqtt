@@ -24,14 +24,14 @@ The `config.json` provides following settings
 
 ```jsonc
 {
-  "poll": 10,   # frequence to poll the bridge
-  "alive": 900, # emit an alive message to the log every alive seconds
-  "log": "/var/log/pulse2mqtt/pulse2mqtt.log",  # logfile
+  "poll": 10,   // frequence to poll the bridge
+  "alive": 900, // emit an alive message to the log every alive seconds
+  "log": "/var/log/pulse2mqtt/pulse2mqtt.log",  // logfile
 
-  # loglevel
-  # WARNING: exceptions only
-  # INFO: startup, stop and keepalive messages
-  # DEBUG: include deecoded payloads (usefull for discovering obis values your meter supports)
+  // loglevel
+  // WARNING: exceptions only
+  // INFO: startup, stop and keepalive messages
+  // DEBUG: include deecoded payloads (usefull for discovering obis values your meter supports)
   "loglevel": "INFO",
 
   "pulse": {
