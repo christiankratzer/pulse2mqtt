@@ -35,47 +35,47 @@ The `config.json` provides following settings
   "loglevel": "INFO",
 
   "pulse": {
-    "url": "http://tibber-bridge/data.json",    # url to poll the tibber bridge
-    "node": "1",            # 1 in most cases
-    "user": "admin",        # username always admin
-    "password": "XXXX-XXXX" # password, check bottom of bridge
+    "url": "http://tibber-bridge/data.json",    // url to poll the tibber bridge
+    "node": "1",            // 1 in most cases
+    "user": "admin",        // username always admin
+    "password": "XXXX-XXXX" // password, check bottom of bridge
   },
 
   "mqtt": {
-    # topic to publish data on
+    // topic to publish data on
     "topic": "meter/Zuhause/NNNNNNN/SENSOR",
 
     "client": {
-        # parameters for creating mqtt client
-        "client_id": "pulse2mqtt"   # mqtt client name
+        // parameters for creating mqtt client
+        "client_id": "pulse2mqtt"   // mqtt client name
     },
 
-    # optional credentials
+    // optional credentials
     "credentials": {
     } 
 
-    # optional tls config
+    // optional tls config
     "tls": {
     } 
 
-    # broker connection settings
+    // broker connection settings
     "broker": {
-        "host": "mqtt.host.name",   # mqtt broker hostname
-        "port": 1883                # mqtt broker port
+        "host": "mqtt.host.name",   // mqtt broker hostname
+        "port": 1883                // mqtt broker port
      },
 
-    # any static values you want to add to the messages published
+    // any static values you want to add to the messages published
      "static": {
         "OBIS_Meter_number": "NNNNNNN"  
      }
   },
 
   "obis": {
-     # mapping of obis data to json output
+     // mapping of obis data to json output
       "0100010800ff": {
-        "name": "OBIS_Total_in",    # name of obis parameter
-        "factor": 0.001,            # optional factor to scale data with
-        "round": 0                  # optional rounding
+        "name": "OBIS_Total_in",    // name of obis parameter
+        "factor": 0.001,            // optional factor to scale data with
+        "round": 0                  // optional rounding
       },
       "0100100700ff": {
         "name": "OBIS_Power_curr"
